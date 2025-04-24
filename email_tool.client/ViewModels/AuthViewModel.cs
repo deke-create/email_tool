@@ -3,23 +3,56 @@ using System.Windows.Input;
 using email_tool.client.Commands;
 using email_tool.client.Services;
 using email_tool.shared.Models;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using email_tool.shared.Enums;
 
 namespace email_tool.client.ViewModels;
 
-public class AuthViewModel
+public class AuthViewModel : INotifyPropertyChanged
 {
     private readonly AuthService _authService;
+    private string _username;
+    private string _password;
+    private string _errorMessage;
+    private bool _isErrorVisible;
+
+    public string Username
+    {
+        get => _username;
+        set { _username = value; OnPropertyChanged(); }
+    }
+
+    public string Password
+    {
+        get => _password;
+        set { _password = value; OnPropertyChanged(); }
+    }
+
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set { _errorMessage = value; OnPropertyChanged(); }
+    }
+
+    public bool IsErrorVisible
+    {
+        get => _isErrorVisible;
+        set { _isErrorVisible = value; OnPropertyChanged(); }
+    }
 
     public ICommand LoginCommand { get; }
 
     public AuthViewModel(AuthService authService)
     {
         _authService = authService;
-        LoginCommand = new AsyncRelayCommand<object>(async (parameter) =>
+        LoginCommand = new AsyncRelayCommand<object>(async _ =>
         {
-            if (parameter is (string username, string password))
+            var result = await LoginAsync(Username, Password);
+            if (result.Status != CallStatus.Success)
             {
-                await LoginAsync(username, password);
+                ErrorMessage = result.Message;
+                IsErrorVisible = true;
             }
         });
     }
@@ -34,5 +67,11 @@ public class AuthViewModel
 
         var res = await _authService.LoginAsync(loginRequest);
         return res;
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
