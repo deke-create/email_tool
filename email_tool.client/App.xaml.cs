@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System.Net.Http;
+using System.Windows;
+using email_tool.client.Models;
+using email_tool.client.Services;
 using email_tool.client.Views;
 using Microsoft.Extensions.DependencyInjection;
 using email_tool.client.ViewModels;
@@ -18,9 +21,15 @@ namespace email_tool.client
         {
             var serviceCollection = new ServiceCollection();
 
-            // Register ViewModels
+
+            serviceCollection.AddTransient<HttpClient>();
+            serviceCollection.AddSingleton<User>();
             serviceCollection.AddSingleton<AuthViewModel>();
             serviceCollection.AddSingleton<EmailViewModel>();
+            serviceCollection.AddSingleton<EmailService>();
+            serviceCollection.AddSingleton<AuthService>();
+            
+            
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
         }

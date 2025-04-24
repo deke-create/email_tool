@@ -43,9 +43,9 @@ public class AuthViewModel : INotifyPropertyChanged
 
     public ICommand LoginCommand { get; }
 
-    public AuthViewModel(AuthService authService)
+    public AuthViewModel()
     {
-        _authService = authService;
+        _authService = App.GetService<AuthService>();;
         LoginCommand = new AsyncRelayCommand<object>(async _ =>
         {
             var result = await LoginAsync(Username, Password);
@@ -56,6 +56,8 @@ public class AuthViewModel : INotifyPropertyChanged
             }
         });
     }
+
+
 
     public async Task<CallResult<string>> LoginAsync(string username, string password)
     {

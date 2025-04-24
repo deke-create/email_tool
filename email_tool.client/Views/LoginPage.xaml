@@ -2,14 +2,18 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:vm="clr-namespace:email_tool.client.ViewModels"
+      xmlns:helpers="clr-namespace:email_tool.client.Helpers"
       Title="Login">
+    <Page.DataContext>
+        <vm:AuthViewModel />
+    </Page.DataContext>
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
             <TextBlock Text="Username" Margin="0,0,0,5" />
             <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0,10" />
             
             <TextBlock Text="Password" Margin="0,0,0,5" />
-            <PasswordBox Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Margin="0,10" />
+            <PasswordBox helpers:PasswordBoxHelper.BoundPassword="{Binding .Password, Mode=TwoWay}"  Margin="0,10" />
             
             <Button Content="Login" Command="{Binding LoginCommand}" Margin="0,10" />
             <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />

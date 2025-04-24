@@ -57,9 +57,9 @@ public class EmailViewModel : INotifyPropertyChanged
 
     public ICommand SendEmailCommand { get; }
 
-    public EmailViewModel(EmailService emailService)
+    public EmailViewModel()
     {
-        _emailService = emailService;
+        _emailService = App.GetService<EmailService>();
         SendEmailCommand = new AsyncRelayCommand<Task>(async _ =>
         {
             var result = await SendEmailAsync(Sender, Recipient, Subject, Body);

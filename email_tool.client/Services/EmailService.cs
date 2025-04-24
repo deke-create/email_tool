@@ -19,7 +19,7 @@ public class EmailService
     public async Task<CallResult<string>> SendEmailAsync(MessageModel message)
     {
         var content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("api/email/send", content);
+        var response = await _httpClient.PostAsync("http://localhost:5000/api/email/send", content);
 
         if (response.IsSuccessStatusCode)
         {

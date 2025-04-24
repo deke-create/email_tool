@@ -19,7 +19,7 @@ public class AuthService
     public async Task<CallResult<string>> LoginAsync(LoginRequestModel loginRequest)
     {
         var content = new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("api/auth/login", content);
+        var response = await _httpClient.PostAsync("http://localhost:5000/api/auth/login", content);
 
         if (response.IsSuccessStatusCode)
         {

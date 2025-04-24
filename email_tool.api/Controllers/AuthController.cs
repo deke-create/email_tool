@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
         var configuredUsername = _configuration["Auth:Username"];
         var configuredPassword = _configuration["Auth:Password"];
 
-        if (requestModel.Username == configuredUsername && requestModel.Password == configuredPassword)
+        if (configuredUsername == requestModel.Username && configuredPassword == requestModel.Password)
         {
             var token = GenerateJwtToken(requestModel.Username);
             return Ok(new CallResult<string>

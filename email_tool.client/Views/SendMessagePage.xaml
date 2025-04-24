@@ -3,6 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:vm="clr-namespace:email_tool.client.ViewModels"
       Title="Send Message">
+    <Page.DataContext>
+        <vm:EmailViewModel />
+    </Page.DataContext>
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
             <TextBlock Text="Sender" Margin="0,0,0,5" />
