@@ -5,6 +5,7 @@ using email_tool.client.Services;
 using email_tool.shared.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using email_tool.client.Models;
 using email_tool.shared.Enums;
 
 namespace email_tool.client.ViewModels;
@@ -12,6 +13,7 @@ namespace email_tool.client.ViewModels;
 public class EmailViewModel : INotifyPropertyChanged
 {
     private readonly EmailService? _emailService;
+    private User? _user;
     private string _sender;
     private string _recipient;
     private string _subject;
@@ -59,6 +61,7 @@ public class EmailViewModel : INotifyPropertyChanged
 
     public EmailViewModel()
     {
+        _user = App.GetService<User>();
         _emailService = App.GetService<EmailService>();
         SendEmailCommand = new AsyncRelayCommand<Task>(async _ =>
         {
@@ -74,7 +77,7 @@ public class EmailViewModel : INotifyPropertyChanged
     public async Task<CallResult<string>> SendEmailAsync(string sender, string recipient, string subject, string body)
     {
         var message = new MessageModel(sender, recipient, subject, body);
-        return await _emailService.SendEmailAsync(message);
+        return await _emailService.SendEmailAsync(message, _user.Token);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

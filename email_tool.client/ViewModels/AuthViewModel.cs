@@ -5,6 +5,7 @@ using email_tool.client.Services;
 using email_tool.shared.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using email_tool.client.Models;
 using email_tool.shared.Enums;
 
 
@@ -13,6 +14,7 @@ namespace email_tool.client.ViewModels;
 public class AuthViewModel : INotifyPropertyChanged
 {
     private readonly AuthService? _authService;
+    private User? _user;
     private string _username;
     private string _password;
     private string _errorMessage;
@@ -47,6 +49,7 @@ public class AuthViewModel : INotifyPropertyChanged
     public AuthViewModel()
     {
         _authService = App.GetService<AuthService>();
+        _user = App.GetService<User>();
 
         LoginCommand = new AsyncRelayCommand<object>(async _ =>
         {
@@ -59,6 +62,8 @@ public class AuthViewModel : INotifyPropertyChanged
             }
             else
             {
+                _user!.Token = result.Data!;
+                _user.UserName = Username;
                 App.NavigateToSendMessagePage();
             }
         });
@@ -72,7 +77,7 @@ public class AuthViewModel : INotifyPropertyChanged
             Password = password
         };
 
-        var res = await _authService.LoginAsync(loginRequest);
+        var res = await _authService!.LoginAsync(loginRequest);
         return res;
     }
 

@@ -16,9 +16,11 @@ public class EmailService
         _httpClient = httpClient;
     }
 
-    public async Task<CallResult<string>> SendEmailAsync(MessageModel message)
+    public async Task<CallResult<string>> SendEmailAsync(MessageModel message, string token)
     {
+
         var content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         var response = await _httpClient.PostAsync("http://localhost:5000/api/email/send", content);
 
         if (response.IsSuccessStatusCode)

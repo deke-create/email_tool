@@ -20,7 +20,7 @@ public class EmailController : Controller
         _emailService = emailService;
     }
 
-    [Route("/send"), HttpPost]
+    [Route("send"), HttpPost]
     public async Task<IActionResult> Send(MessageModel message)
     {
         if (message == null)

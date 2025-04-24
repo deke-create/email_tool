@@ -1,4 +1,5 @@
-﻿using email_tool.shared.Enums;
+﻿using System.Text.Json.Serialization;
+using email_tool.shared.Enums;
 
 namespace email_tool.shared.Models;
 

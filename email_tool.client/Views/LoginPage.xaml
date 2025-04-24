@@ -8,7 +8,7 @@
         <vm:AuthViewModel />
     </Page.DataContext>
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="150">
             <TextBlock Text="Username" Margin="0,0,0,5" />
             <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0,10" />
             

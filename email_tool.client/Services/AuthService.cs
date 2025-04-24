@@ -19,8 +19,6 @@ public class AuthService
     public async Task<CallResult<string>> LoginAsync(LoginRequestModel loginRequest)
     {
 
-        
-        
         try
         {
             var content = new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, "application/json");
@@ -29,7 +27,11 @@ public class AuthService
             if (response.IsSuccessStatusCode)
             {
                 var responseData = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<CallResult<string>>(responseData);
+                var res = JsonSerializer.Deserialize<CallResult<string>>(responseData, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                return res!;
             }
 
             return new CallResult<string>

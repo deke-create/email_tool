@@ -30,12 +30,13 @@ public class AuthController : ControllerBase
         if (configuredUsername == requestModel.Username && configuredPassword == requestModel.Password)
         {
             var token = GenerateJwtToken(requestModel.Username);
-            return Ok(new CallResult<string>
+            var res = new CallResult<string>
             {
                 Status = CallStatus.Success,
                 Message = "Login successful",
                 Data = token
-            });
+            };
+            return Ok(res);
         }
 
         _logger.LogWarning("Invalid login attempt for user {Username}", requestModel.Username);
