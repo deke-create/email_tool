@@ -1,4 +1,6 @@
-﻿using email_tool.shared.Enums;
+﻿using System.Net.Mail;
+using Microsoft.Extensions.Configuration;
+using email_tool.shared.Enums;
 using email_tool.shared.Models;
 
 namespace email_tool.bll;
@@ -10,6 +12,24 @@ public interface IEmailService
 
 public class EmailService : IEmailService
 {
+    private readonly IConfiguration _configuration;
+    private readonly SmtpClient _smtpClient;
+
+    public EmailService(IConfiguration configuration, SmtpClient smtpClient)
+    {
+        _configuration = configuration;
+        _smtpClient = smtpClient;
+
+        var smtpSettings = _configuration.GetSection("SmtpSettings");
+        _smtpClient.Host = smtpSettings["Host"];
+        _smtpClient.Port = int.Parse(smtpSettings["Port"] ?? string.Empty);
+        _smtpClient.Credentials = new System.Net.NetworkCredential(
+            smtpSettings["Username"], 
+            smtpSettings["Password"]
+        );
+        _smtpClient.EnableSsl = bool.Parse(smtpSettings["EnableSsl"] ?? string.Empty);
+    }
+
     public async Task<CallResult<string>> SendMessage(MessageModel message)
     {
         const int maxRetries = 3;
@@ -20,9 +40,17 @@ public class EmailService : IEmailService
             attempt++;
             try
             {
-                // Simulate async email sending logic
-                await Task.Delay(100); // Simulate a delay for async operation
-                // Simulate success
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(message.Sender),
+                    Subject = message.Subject,
+                    Body = message.Body,
+                    IsBodyHtml = true
+                };
+                mailMessage.To.Add(message.Recipient);
+
+                await _smtpClient.SendMailAsync(mailMessage);
+
                 return new CallResult<string>
                 {
                     Status = CallStatus.Success,
@@ -45,7 +73,6 @@ public class EmailService : IEmailService
             }
         }
 
-        // This point should not be reached
         return new CallResult<string>
         {
             Status = CallStatus.Fail,
