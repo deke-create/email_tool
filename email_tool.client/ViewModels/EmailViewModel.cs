@@ -22,29 +22,50 @@ public class EmailViewModel : INotifyPropertyChanged
     private bool _isStatusVisible;
     private bool _isSuccess;
     private bool _isBusy;
+    private bool _isSendEnabled;
 
     public string Sender
     {
         get => _sender;
-        set { _sender = value; OnPropertyChanged(); }
+        set
+        {
+            _sender = value;
+            OnPropertyChanged();
+            UpdateIsSendEnabled();
+        }
     }
 
     public string Recipient
     {
         get => _recipient;
-        set { _recipient = value; OnPropertyChanged(); }
+        set
+        {
+            _recipient = value;
+            OnPropertyChanged();
+            UpdateIsSendEnabled();
+        }
     }
 
     public string Subject
     {
         get => _subject;
-        set { _subject = value; OnPropertyChanged(); }
+        set
+        {
+            _subject = value;
+            OnPropertyChanged();
+            UpdateIsSendEnabled();
+        }
     }
 
     public string Body
     {
         get => _body;
-        set { _body = value; OnPropertyChanged(); }
+        set
+        {
+            _body = value;
+            OnPropertyChanged();
+            UpdateIsSendEnabled();
+        }
     }
 
     public string StatusMessage
@@ -69,6 +90,12 @@ public class EmailViewModel : INotifyPropertyChanged
     {
         get => _isBusy;
         set { _isBusy = value; OnPropertyChanged(); }
+    }
+
+    public bool IsSendEnabled
+    {
+        get => _isSendEnabled;
+        private set { _isSendEnabled = value; OnPropertyChanged(); }
     }
 
     public ICommand SendEmailCommand { get; }
@@ -100,6 +127,14 @@ public class EmailViewModel : INotifyPropertyChanged
     {
         var message = new MessageModel(sender, recipient, subject, body);
         return await _emailService.SendEmailAsync(message, _user.Token);
+    }
+
+    private void UpdateIsSendEnabled()
+    {
+        IsSendEnabled = !string.IsNullOrWhiteSpace(Sender) &&
+                        !string.IsNullOrWhiteSpace(Recipient) &&
+                        !string.IsNullOrWhiteSpace(Subject) &&
+                        !string.IsNullOrWhiteSpace(Body);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

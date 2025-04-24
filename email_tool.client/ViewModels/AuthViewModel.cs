@@ -19,17 +19,28 @@ public class AuthViewModel : INotifyPropertyChanged
     private string _password;
     private string _errorMessage;
     private bool _isErrorVisible;
+    private bool _isLoginEnabled;
 
     public string Username
     {
         get => _username;
-        set { _username = value; OnPropertyChanged(); }
+        set
+        {
+            _username = value;
+            OnPropertyChanged();
+            UpdateIsLoginEnabled();
+        }
     }
 
     public string Password
     {
         get => _password;
-        set { _password = value; OnPropertyChanged(); }
+        set
+        {
+            _password = value;
+            OnPropertyChanged();
+            UpdateIsLoginEnabled();
+        }
     }
 
     public string ErrorMessage
@@ -50,6 +61,12 @@ public class AuthViewModel : INotifyPropertyChanged
     {
         get => _isBusy;
         set { _isBusy = value; OnPropertyChanged(); }
+    }
+
+    public bool IsLoginEnabled
+    {
+        get => _isLoginEnabled;
+        private set { _isLoginEnabled = value; OnPropertyChanged(); }
     }
 
     public ICommand LoginCommand { get; }
@@ -89,6 +106,11 @@ public class AuthViewModel : INotifyPropertyChanged
 
         var res = await _authService!.LoginAsync(loginRequest);
         return res;
+    }
+
+    private void UpdateIsLoginEnabled()
+    {
+        IsLoginEnabled = !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
