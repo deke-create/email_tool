@@ -18,19 +18,37 @@ public class AuthService
 
     public async Task<CallResult<string>> LoginAsync(LoginRequestModel loginRequest)
     {
-        var content = new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync("http://localhost:5000/api/auth/login", content);
 
-        if (response.IsSuccessStatusCode)
+        
+        
+        try
         {
-            var responseData = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<CallResult<string>>(responseData);
+            var content = new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("http://localhost:5000/api/auth/login", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<CallResult<string>>(responseData);
+            }
+
+            return new CallResult<string>
+            {
+                Status = CallStatus.Fail,
+                Message = "Login failed"
+            };
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during login: {ex.Message}");
+            return new CallResult<string>
+            {
+                Status = CallStatus.Error,
+                Message = "An error occurred during login. Please try again later."
+            };
         }
 
-        return new CallResult<string>
-        {
-            Status = CallStatus.Fail,
-            Message = "Login failed"
-        };
+
     }
 }

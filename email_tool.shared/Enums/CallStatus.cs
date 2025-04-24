@@ -3,5 +3,6 @@
 public enum CallStatus
 {
     Success,
-    Fail
+    Fail,
+    Error
 }

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using email_tool.shared.Enums;
 
+
 namespace email_tool.client.ViewModels;
 
 public class AuthViewModel : INotifyPropertyChanged
@@ -45,19 +46,23 @@ public class AuthViewModel : INotifyPropertyChanged
 
     public AuthViewModel()
     {
-        _authService = App.GetService<AuthService>();;
+        _authService = App.GetService<AuthService>();
+
         LoginCommand = new AsyncRelayCommand<object>(async _ =>
         {
+            IsErrorVisible = false;
             var result = await LoginAsync(Username, Password);
             if (result.Status != CallStatus.Success)
             {
                 ErrorMessage = result.Message;
                 IsErrorVisible = true;
             }
+            else
+            {
+                App.NavigateToSendMessagePage();
+            }
         });
     }
-
-
 
     public async Task<CallResult<string>> LoginAsync(string username, string password)
     {
