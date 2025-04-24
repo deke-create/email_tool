@@ -107,6 +107,7 @@ public class EmailViewModel : INotifyPropertyChanged
         SendEmailCommand = new AsyncRelayCommand<Task>(async _ =>
         {
             IsBusy = true;
+            IsStatusVisible = false;
             var result = await SendEmailAsync(Sender, Recipient, Subject, Body);
             if (result.Status == CallStatus.Success)
             {

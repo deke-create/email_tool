@@ -28,7 +28,10 @@ public class EmailController : Controller
             return BadRequest("Message cannot be null");
         }
 
-        if (string.IsNullOrEmpty(message.Sender) || string.IsNullOrEmpty(message.Recipient))
+        if (string.IsNullOrEmpty(message.Sender) 
+            || string.IsNullOrEmpty(message.Recipient)
+            || string.IsNullOrEmpty(message.Body)
+            || string.IsNullOrEmpty(message.Subject))
         {
             return BadRequest("Sender and Recipient cannot be empty");
         }
@@ -40,7 +43,7 @@ public class EmailController : Controller
             return Ok(result);
         }
         
-        _logger.LogError($"Failed to send email: {result.Message}");
+        _logger.LogError($"Failed to send email.");
 
         return StatusCode(500, result);
     }

@@ -8,16 +8,28 @@
     </Page.DataContext>
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="450">
-            <TextBlock Text="Sender" Margin="0,0,0,5" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Sender" />
+                <TextBlock Text="*" Foreground="Red" Margin="5,0,0,0" />
+            </StackPanel>
             <TextBox Text="{Binding Sender, UpdateSourceTrigger=PropertyChanged}" Margin="0,10" />
             
-            <TextBlock Text="Recipient" Margin="0,0,0,5" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Recipient" />
+                <TextBlock Text="*" Foreground="Red" Margin="5,0,0,0" />
+            </StackPanel>
             <TextBox Text="{Binding Recipient, UpdateSourceTrigger=PropertyChanged}" Margin="0,10" />
             
-            <TextBlock Text="Subject" Margin="0,0,0,5" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Subject" />
+                <TextBlock Text="*" Foreground="Red" Margin="5,0,0,0" />
+            </StackPanel>
             <TextBox Text="{Binding Subject, UpdateSourceTrigger=PropertyChanged}" Margin="0,10" />
             
-            <TextBlock Text="Body" Margin="0,0,0,5" />
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Body" />
+                <TextBlock Text="*" Foreground="Red" Margin="5,0,0,0" />
+            </StackPanel>
             <TextBox Text="{Binding Body, UpdateSourceTrigger=PropertyChanged}" Margin="0,10" AcceptsReturn="True" Height="100" />
             
             <ProgressBar IsIndeterminate="True" Height="10" Margin="0,10"
