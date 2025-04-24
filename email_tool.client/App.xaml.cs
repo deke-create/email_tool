@@ -1,12 +1,15 @@
-﻿using System.Configuration;
-using System.Data;
 using System.Windows;
+using email_tool.client.Views;
 
-namespace email_tool.client;
-
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
-public partial class App : Application
+namespace email_tool.client
 {
+    public partial class App : Application
+    {
+        public static void NavigateToSendMessagePage()
+        {
+            var sendMessagePage = new SendMessagePage();
+            var mainWindow = Current.MainWindow;
+            mainWindow.Content = sendMessagePage;
+        }
+    }
 }

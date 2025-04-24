@@ -22,14 +22,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public ActionResult<CallResult<string>> Login([FromBody] LoginRequest request)
+    public ActionResult<CallResult<string>> Login([FromBody] LoginRequestModel requestModel)
     {
         var configuredUsername = _configuration["Auth:Username"];
         var configuredPassword = _configuration["Auth:Password"];
 
-        if (request.Username == configuredUsername && request.Password == configuredPassword)
+        if (requestModel.Username == configuredUsername && requestModel.Password == configuredPassword)
         {
-            var token = GenerateJwtToken(request.Username);
+            var token = GenerateJwtToken(requestModel.Username);
             return Ok(new CallResult<string>
             {
                 Status = CallStatus.Success,
@@ -38,7 +38,7 @@ public class AuthController : ControllerBase
             });
         }
 
-        _logger.LogWarning("Invalid login attempt for user {Username}", request.Username);
+        _logger.LogWarning("Invalid login attempt for user {Username}", requestModel.Username);
         return Unauthorized(new CallResult<string>
         {
             Status = CallStatus.Fail,
@@ -69,8 +69,4 @@ public class AuthController : ControllerBase
     }
 }
 
-public class LoginRequest
-{
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}
+
