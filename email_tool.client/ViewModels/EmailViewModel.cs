@@ -20,6 +20,7 @@ public class EmailViewModel : INotifyPropertyChanged
     private string _body;
     private string _statusMessage;
     private bool _isStatusVisible;
+    private bool _isSuccess;
 
     public string Sender
     {
@@ -57,6 +58,12 @@ public class EmailViewModel : INotifyPropertyChanged
         set { _isStatusVisible = value; OnPropertyChanged(); }
     }
 
+    public bool IsSuccess
+    {
+        get => _isSuccess;
+        set { _isSuccess = value; OnPropertyChanged(); }
+    }
+
     public ICommand SendEmailCommand { get; }
 
     public EmailViewModel()
@@ -69,8 +76,14 @@ public class EmailViewModel : INotifyPropertyChanged
             if (result.Status == CallStatus.Success)
             {
                 StatusMessage = "Email sent successfully!";
-                IsStatusVisible = true;
+                IsSuccess = true;
             }
+            else
+            {
+                StatusMessage = $"Failed to send email: {result.Message}";
+                IsSuccess = false;
+            }
+            IsStatusVisible = true;
         });
     }
 
