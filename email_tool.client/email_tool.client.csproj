@@ -16,4 +16,8 @@
       <Folder Include="ViewModels\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\email_tool.shared\email_tool.shared.csproj" />
+    </ItemGroup>
+
 </Project>

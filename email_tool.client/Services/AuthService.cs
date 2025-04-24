@@ -1,0 +1,36 @@
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using email_tool.shared.Enums;
+using email_tool.shared.Models;
+
+namespace email_tool.client.Services;
+
+public class AuthService
+{
+    private readonly HttpClient _httpClient;
+
+    public AuthService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public async Task<CallResult<string>> LoginAsync(LoginRequestModel loginRequest)
+    {
+        var content = new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync("api/auth/login", content);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseData = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<CallResult<string>>(responseData);
+        }
+
+        return new CallResult<string>
+        {
+            Status = CallStatus.Fail,
+            Message = "Login failed"
+        };
+    }
+}

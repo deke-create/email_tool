@@ -9,6 +9,8 @@ public class MessageModel
         Subject = subject;
         Body = body;
     }
+    
+
 
     public string Sender { get; set; }
     public string Recipient { get; set; }
