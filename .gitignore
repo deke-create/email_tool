@@ -8,3 +8,4 @@ email_tool.client/obj/
 email_tool.data/
 email_tool.shared/bin/
 email_tool.shared/obj/
+email_tool.api/Logs/
