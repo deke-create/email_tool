@@ -21,6 +21,7 @@ public class EmailViewModel : INotifyPropertyChanged
     private string _statusMessage;
     private bool _isStatusVisible;
     private bool _isSuccess;
+    private bool _isBusy;
 
     public string Sender
     {
@@ -64,6 +65,12 @@ public class EmailViewModel : INotifyPropertyChanged
         set { _isSuccess = value; OnPropertyChanged(); }
     }
 
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set { _isBusy = value; OnPropertyChanged(); }
+    }
+
     public ICommand SendEmailCommand { get; }
 
     public EmailViewModel()
@@ -72,6 +79,7 @@ public class EmailViewModel : INotifyPropertyChanged
         _emailService = App.GetService<EmailService>();
         SendEmailCommand = new AsyncRelayCommand<Task>(async _ =>
         {
+            IsBusy = true;
             var result = await SendEmailAsync(Sender, Recipient, Subject, Body);
             if (result.Status == CallStatus.Success)
             {
@@ -84,6 +92,7 @@ public class EmailViewModel : INotifyPropertyChanged
                 IsSuccess = false;
             }
             IsStatusVisible = true;
+            IsBusy = false;
         });
     }
 

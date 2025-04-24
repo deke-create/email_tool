@@ -43,6 +43,14 @@ public class AuthViewModel : INotifyPropertyChanged
         get => _isErrorVisible;
         set { _isErrorVisible = value; OnPropertyChanged(); }
     }
+    
+    private bool _isBusy;
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set { _isBusy = value; OnPropertyChanged(); }
+    }
 
     public ICommand LoginCommand { get; }
 
@@ -54,6 +62,7 @@ public class AuthViewModel : INotifyPropertyChanged
         LoginCommand = new AsyncRelayCommand<object>(async _ =>
         {
             IsErrorVisible = false;
+            IsBusy = true;
             var result = await LoginAsync(Username, Password);
             if (result.Status != CallStatus.Success)
             {
@@ -66,6 +75,7 @@ public class AuthViewModel : INotifyPropertyChanged
                 _user.UserName = Username;
                 App.NavigateToSendMessagePage();
             }
+            IsBusy = false;
         });
     }
 
