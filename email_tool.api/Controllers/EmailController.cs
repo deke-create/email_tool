@@ -1,11 +1,13 @@
 ﻿using email_tool.bll;
 using email_tool.shared.Enums;
 using email_tool.shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class EmailController : Controller
 {
