@@ -30,7 +30,7 @@ namespace email_tool.client
             _serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
-        public static T GetService<T>() => _serviceProvider.GetService<T>();
+        public static T? GetService<T>() => _serviceProvider.GetService<T>();
 
         public static void NavigateToSendMessagePage()
         {

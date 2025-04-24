@@ -12,7 +12,7 @@ namespace email_tool.client.ViewModels;
 
 public class AuthViewModel : INotifyPropertyChanged
 {
-    private readonly AuthService _authService;
+    private readonly AuthService? _authService;
     private string _username;
     private string _password;
     private string _errorMessage;

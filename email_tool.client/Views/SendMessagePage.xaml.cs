@@ -6,7 +6,7 @@ namespace email_tool.client.Views
 {
     public partial class SendMessagePage : Page
     {
-        public SendMessagePage(EmailViewModel vm)
+        public SendMessagePage(EmailViewModel? vm)
         {
             InitializeComponent();
             DataContext = vm;

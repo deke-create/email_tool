@@ -11,7 +11,7 @@ namespace email_tool.client.ViewModels;
 
 public class EmailViewModel : INotifyPropertyChanged
 {
-    private readonly EmailService _emailService;
+    private readonly EmailService? _emailService;
     private string _sender;
     private string _recipient;
     private string _subject;
