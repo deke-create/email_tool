@@ -39,6 +39,8 @@ public class EmailController : Controller
         {
             return Ok(result);
         }
+        
+        _logger.LogError($"Failed to send email: {result.Message}");
 
         return StatusCode(500, result);
     }

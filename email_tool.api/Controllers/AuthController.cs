@@ -13,10 +13,12 @@ namespace email_tool.api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IConfiguration configuration, ILogger<AuthController> logger)
     {
         _configuration = configuration;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -36,6 +38,7 @@ public class AuthController : ControllerBase
             });
         }
 
+        _logger.LogWarning("Invalid login attempt for user {Username}", request.Username);
         return Unauthorized(new CallResult<string>
         {
             Status = CallStatus.Fail,
