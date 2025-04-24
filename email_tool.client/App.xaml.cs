@@ -20,8 +20,6 @@ namespace email_tool.client
         private void ConfigureServices()
         {
             var serviceCollection = new ServiceCollection();
-
-
             serviceCollection.AddTransient<HttpClient>();
             serviceCollection.AddSingleton<User>();
             serviceCollection.AddSingleton<AuthViewModel>();
@@ -29,8 +27,6 @@ namespace email_tool.client
             serviceCollection.AddSingleton<EmailService>();
             serviceCollection.AddSingleton<AuthService>();
             
-            
-
             _serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
@@ -41,8 +37,6 @@ namespace email_tool.client
             var emailViewModel = GetService<EmailViewModel>();
             var sendMessagePage = new SendMessagePage(emailViewModel);
             var mainWindow = Current.MainWindow;
-
-            // Example of resolving a ViewModel (if needed)
             
             sendMessagePage.DataContext = emailViewModel;
             mainWindow.Content = sendMessagePage;
