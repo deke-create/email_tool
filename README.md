@@ -54,43 +54,9 @@ ___________________________________________________
 
 
 
-Access the API http (e.g. Postman) client: 
+Access the API with http client: 
 
-Step 1 (Login):
-curl --location 'http://localhost:5000/api/auth/login' \
---header 'Content-Type: application/json' \
---data '{
-    "Username": "poweruser",
-    "Password": "password123"
-}'
-
-
-
-example response below which includes access token (see 'data' property) needed for subsequent api request(s):
-
-{
-    "status": 0,
-    "message": "Login successful",
-    "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJwb3dlcnVzZXIiLCJqdGkiOiI3MmUyMjlmNC0yZTcyLTQ1NTctOWRlNS1iOTc2ODU5Yjc5NGYiLCJleHAiOjE3NDU1NDIzNjYsImlzcyI6ImVtYWlsX3Rvb2xfYXBpIiwiYXVkIjoiZW1haWxfdG9vbF91c2VycyJ9.ckViyKrEgJmgIZlXOZ55hYePbgQ3lpStgzIAz9GFxHY"
-}
-
-
-
-Step 2 (Send Message):
-
-[POST]: http://localhost:5000/api/email/send
-
-
-curl --location 'http://localhost:5000/api/email/send' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJwb3dlcnVzZXIiLCJqdGkiOiI0ZWM4YjE2OS0yYWViLTQwNDQtYWQzYy00ZmRhNTk5MTk4MzQiLCJleHAiOjE3NDU1NDAxODcsImlzcyI6ImVtYWlsX3Rvb2xfYXBpIiwiYXVkIjoiZW1haWxfdG9vbF91c2VycyJ9.Hjvy0h5LvKHCZPrtKEY_oBxuBZrtRXpGlhPgA6MfzNM' \
---data-raw '{
-  "Sender": "example@example.com",
-  "Recipient": "recipient@example.com",
-  "Subject": "Sample Subject",
-  "Body": "This is the body of the message."
-}'
-
+Project includes a pre-configured Postman data file which can be easily imported into Postman to test out the project's "Login" and "Send Message" endpoints:  email_tool.postman_collection.json 
 
 
 
