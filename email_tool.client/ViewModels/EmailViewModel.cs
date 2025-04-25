@@ -116,7 +116,7 @@ public class EmailViewModel : INotifyPropertyChanged
             }
             else
             {
-                StatusMessage = $"Failed to send email: {result.Message}";
+                StatusMessage = result.Message;
                 IsSuccess = false;
             }
             IsStatusVisible = true;

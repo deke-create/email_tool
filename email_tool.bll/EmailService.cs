@@ -3,12 +3,14 @@ using Microsoft.Extensions.Configuration;
 using email_tool.shared.Enums;
 using email_tool.shared.Models;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
 namespace email_tool.bll;
 
 public interface IEmailService
 {
     Task<CallResult<string>> SendMessage(MessageModel message);
+    Task RetryFailedMessages();
 }
 
 public class EmailService : IEmailService
@@ -16,6 +18,7 @@ public class EmailService : IEmailService
     private readonly IConfiguration _configuration;
     private readonly SmtpClient _smtpClient;
     private readonly ILogger<EmailService> _logger;
+    private static readonly ConcurrentQueue<MessageModel> _failedMessagesQueue = new();
 
     public EmailService(IConfiguration configuration, SmtpClient smtpClient, ILogger<EmailService> logger)
     {
@@ -33,34 +36,25 @@ public class EmailService : IEmailService
         _smtpClient.EnableSsl = bool.Parse(smtpSettings["EnableSsl"] ?? string.Empty);
     }
 
+
     /// <summary>
-    /// Sends an email message with retry logic in case of failures.
+    /// Sends an email message to a specified recipient.
     /// </summary>
-    /// <param name="message">The email message to be sent, containing sender, recipient, subject, and body.</param>
-    /// <returns>
-    /// A <see cref="CallResult{T}"/> object containing the status, message, and optional data (e.g., message ID).
-    /// </returns>
+    /// <param name="message">The email message to be sent, including sender, recipient, subject, and body details.</param>
+    /// <returns>A <see cref="CallResult{T}"/> containing the status, a message, and optional data related to the operation.</returns>
     public async Task<CallResult<string>> SendMessage(MessageModel message)
     {
-        // Maximum number of retry attempts for sending the email.
         const int maxRetries = 3;
-
-        // Current attempt counter.
         var attempt = 0;
-
-        // Delay between retries, in milliseconds, retrieved from configuration.
         var retryDelay = int.Parse(_configuration["RetryDelayMilliseconds"] ?? "1000");
 
-        // Retry loop for sending the email.
         while (attempt < maxRetries)
         {
             attempt++;
             try
             {
-                // Log the current attempt to send the email.
                 _logger.LogInformation("Attempt {Attempt} to send email to {Recipient}", attempt, message.Recipient);
 
-                // Create the email message with the provided details.
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress(message.Sender),
@@ -70,10 +64,8 @@ public class EmailService : IEmailService
                 };
                 mailMessage.To.Add(message.Recipient);
 
-                // Attempt to send the email asynchronously.
                 await _smtpClient.SendMailAsync(mailMessage);
 
-                // Log success and return a successful result.
                 _logger.LogInformation("Email successfully sent to {Recipient}", message.Recipient);
 
                 return new CallResult<string>
@@ -85,12 +77,22 @@ public class EmailService : IEmailService
             }
             catch (Exception ex)
             {
-                // Log the error for the current attempt.
                 _logger.LogError(ex, "Failed to send email to {Recipient} on attempt {Attempt}", message.Recipient, attempt);
 
-                // If maximum retries are reached, return a failure result.
+                if (attempt == 1)
+                {
+                    // Notify the user that retries will be attempted.
+                    return new CallResult<string>
+                    {
+                        Status = CallStatus.Fail,
+                        Message = $"First attempt to send email to {message.Recipient} failed. We will retry up to {maxRetries} times. Please check back soon.",
+                        Data = null
+                    };
+                }
+
                 if (attempt >= maxRetries)
                 {
+                    _failedMessagesQueue.Enqueue(message); // Add to queue for later retry.
                     return new CallResult<string>
                     {
                         Status = CallStatus.Fail,
@@ -99,17 +101,33 @@ public class EmailService : IEmailService
                     };
                 }
 
-                // Wait for the configured delay before retrying.
                 await Task.Delay(retryDelay);
             }
         }
 
-        // Return a failure result if the loop exits unexpectedly.
         return new CallResult<string>
         {
             Status = CallStatus.Fail,
             Message = "Unexpected error occurred.",
             Data = null
         };
+    }
+
+    /// <summary>
+    /// Processes the failed messages queue and retries sending them.
+    /// </summary>
+    public async Task RetryFailedMessages()
+    {
+        while (_failedMessagesQueue.TryDequeue(out var message))
+        {
+            _logger.LogInformation("Retrying email to {Recipient}", message.Recipient);
+            var result = await SendMessage(message);
+
+            if (result.Status == CallStatus.Fail)
+            {
+                _logger.LogWarning("Retry failed for email to {Recipient}. Adding back to queue.", message.Recipient);
+                _failedMessagesQueue.Enqueue(message); // Re-add to queue if retry fails.
+            }
+        }
     }
 }

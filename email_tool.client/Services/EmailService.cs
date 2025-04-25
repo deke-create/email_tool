@@ -34,18 +34,25 @@ public class EmailService
         // Send a POST request to the email API endpoint with the serialized message content.
         var response = await _httpClient.PostAsync("http://localhost:5000/api/email/send", content);
 
+        
+        var responseData = await response.Content.ReadAsStringAsync();
+        var callRes = JsonSerializer.Deserialize<CallResult<string>>(responseData, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+        //TODO: need to add better error handling around deserialization and callRes being potentially null
+        
         // If the response indicates success, deserialize the response data and return it.
         if (response.IsSuccessStatusCode)
         {
-            var responseData = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<CallResult<string>>(responseData);
+            return callRes!;
         }
 
         // If the response indicates failure, return a failure result with an appropriate message.
         return new CallResult<string>
         {
             Status = CallStatus.Fail,
-            Message = "Failed to send email"
+            Message = callRes!.Message
         };
     }
 }
