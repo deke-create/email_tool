@@ -23,11 +23,6 @@ public class EmailController : Controller
     [Route("send"), HttpPost]
     public async Task<IActionResult> Send(MessageModel message)
     {
-        if (message == null)
-        {
-            return BadRequest("Message cannot be null");
-        }
-
         if (string.IsNullOrEmpty(message.Sender) 
             || string.IsNullOrEmpty(message.Recipient)
             || string.IsNullOrEmpty(message.Body)

@@ -127,7 +127,7 @@ public class EmailViewModel : INotifyPropertyChanged
     public async Task<CallResult<string>> SendEmailAsync(string sender, string recipient, string subject, string body)
     {
         var message = new MessageModel(sender, recipient, subject, body);
-        return await _emailService.SendEmailAsync(message, _user.Token);
+        return await _emailService?.SendEmailAsync(message, _user.Token);
     }
 
     private void UpdateIsSendEnabled()

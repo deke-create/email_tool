@@ -27,7 +27,7 @@ public class EmailService : IEmailService
         _logger = logger;
 
         var smtpSettings = _configuration.GetSection("SmtpSettings");
-        _smtpClient.Host = smtpSettings["Host"];
+        _smtpClient.Host = smtpSettings["Host"] ?? string.Empty;
         _smtpClient.Port = int.Parse(smtpSettings["Port"] ?? string.Empty);
         _smtpClient.Credentials = new System.Net.NetworkCredential(
             smtpSettings["Username"],
